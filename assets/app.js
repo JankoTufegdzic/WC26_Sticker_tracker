@@ -254,7 +254,7 @@ function getAppUrl() {
 
 async function hydrateTickets() {
   if (!supabaseClient || !currentUser) {
-    ownedTickets = loadLocalTickets();
+    ownedTickets = new Set();
     updateAccountUi();
     return;
   }
@@ -275,19 +275,6 @@ async function hydrateTickets() {
   updateAccountUi();
 }
 
-function loadLocalTickets() {
-  try {
-    const values = JSON.parse(localStorage.getItem("wc26-local-tickets") ?? "[]");
-    return new Set(Array.isArray(values) ? values : []);
-  } catch {
-    return new Set();
-  }
-}
-
-function persistLocalTickets() {
-  localStorage.setItem("wc26-local-tickets", JSON.stringify([...ownedTickets]));
-}
-
 function updateAccountUi() {
   const configured = Boolean(supabaseClient);
   authButton.classList.toggle("hidden", Boolean(currentUser));
@@ -296,20 +283,47 @@ function updateAccountUi() {
   if (currentUser) {
     syncStatus.textContent = currentUser.email ?? "Signed in";
   } else if (configured) {
-    syncStatus.textContent = "Local only until sign in";
+    syncStatus.textContent = "Sign in required";
   } else {
-    syncStatus.textContent = "Local demo mode";
+    syncStatus.textContent = "Supabase not configured";
   }
 }
 
 function render() {
   updateAccountUi();
+  if (!supabaseClient || !currentUser) {
+    renderLocked();
+    return;
+  }
+
   const route = getRoute();
   if (route.name === "team") {
     renderTeam(route.code);
     return;
   }
   renderHome();
+}
+
+function renderLocked() {
+  const title = supabaseClient ? "Sign in required" : "Supabase setup required";
+  const message = supabaseClient
+    ? "Sign in or create an account to view and update your album."
+    : "Add Supabase environment values and redeploy before the tracker can be used.";
+
+  app.innerHTML = `
+    <section class="locked-panel">
+      <h1>${title}</h1>
+      <p>${message}</p>
+      <button class="button primary" type="button" data-open-auth ${supabaseClient ? "" : "disabled"}>Sign in</button>
+    </section>
+  `;
+
+  const openAuth = app.querySelector("[data-open-auth]");
+  openAuth.addEventListener("click", () => {
+    authMessage.textContent = "";
+    authDialog.showModal();
+    emailInput.focus();
+  });
 }
 
 function getRoute() {
@@ -490,6 +504,11 @@ function renderTicketButton(teamCode, ticketNo) {
 }
 
 async function toggleTicket(teamCode, ticketNo, options = {}) {
+  if (!supabaseClient || !currentUser) {
+    renderLocked();
+    return;
+  }
+
   const key = ticketKey(teamCode, ticketNo);
   const nextOwned = !ownedTickets.has(key);
 
@@ -507,7 +526,6 @@ async function toggleTicket(teamCode, ticketNo, options = {}) {
 
 async function saveTicket(teamCode, ticketNo, isOwned) {
   if (!supabaseClient || !currentUser) {
-    persistLocalTickets();
     return;
   }
 
@@ -554,12 +572,7 @@ function ticketKey(teamCode, ticketNo) {
 }
 
 function configNotice() {
-  if (supabaseClient) return "";
-  return `
-    <p class="notice">
-      Supabase is not configured yet. Changes are saved only in this browser until you add .env values.
-    </p>
-  `;
+  return "";
 }
 
 function escapeHtml(value) {
