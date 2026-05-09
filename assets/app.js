@@ -467,6 +467,8 @@ function renderTeam(code) {
 function renderAlbumSpread(item, owned, missing) {
   const leftTickets = item.tickets.slice(0, 10);
   const rightTickets = item.tickets.slice(10, 20);
+  const leftPositions = ["slot-c3", "slot-c4", "slot-c1", "slot-c2", "slot-c3", "slot-c4", "slot-c1", "slot-c2", "slot-c3", "slot-c4"];
+  const rightPositions = ["slot-c1", "slot-c2", "slot-c3 span-2", "slot-c1", "slot-c2", "slot-c3", "slot-c4", "slot-c2", "slot-c3", "slot-c4"];
 
   return `
     <section class="album-spread" aria-label="${escapeHtml(item.name)} ticket album pages">
@@ -477,12 +479,11 @@ function renderAlbumSpread(item, owned, missing) {
           <h1>${escapeHtml(item.name)}</h1>
           <p>${escapeHtml(item.group)} · ${owned} owned · ${missing} needed</p>
         </div>
-        ${leftTickets.map((ticketNo) => renderTicketButton(item.code, ticketNo)).join("")}
+        ${leftTickets.map((ticketNo, index) => renderTicketButton(item.code, ticketNo, leftPositions[index])).join("")}
       </article>
 
       <article class="album-page album-page-right">
-        <div class="album-empty-slot" aria-hidden="true"></div>
-        ${rightTickets.map((ticketNo) => renderTicketButton(item.code, ticketNo, ticketNo === "13" ? "ticket-landscape" : "")).join("")}
+        ${rightTickets.map((ticketNo, index) => renderTicketButton(item.code, ticketNo, rightPositions[index])).join("")}
       </article>
     </section>
   `;
