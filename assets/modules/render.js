@@ -71,28 +71,39 @@ export function renderTeamHtml({ item, owned, missing }) {
   `;
 }
 
-export function renderPrintReportHtml(rows) {
+export function renderPrintReportHtml(groups) {
   return `
     <div class="print-page">
       <h1>WC26 Remaining Tickets</h1>
       <p>${new Date().toLocaleDateString()}</p>
       <div class="print-list">
         ${
-          rows.length
-            ? rows
-                .map(
-                  (row) => `
-                    <div class="print-row">
-                      <strong>${escapeHtml(row.label)}</strong>
-                      <span>${row.numbers.map(escapeHtml).join(" ")}</span>
-                    </div>
-                  `
-                )
+          groups.length
+            ? groups
+                .map((group) => renderPrintGroup(group))
                 .join("")
             : '<div class="print-row"><strong>Complete</strong><span>No remaining tickets</span></div>'
         }
       </div>
     </div>
+  `;
+}
+
+function renderPrintGroup(group) {
+  return `
+    <section class="print-group">
+      <h2>${escapeHtml(group.label)}</h2>
+      ${group.rows
+        .map(
+          (row) => `
+            <div class="print-row">
+              <strong>${escapeHtml(row.label)}</strong>
+              <span>${row.numbers.map(escapeHtml).join(" ")}</span>
+            </div>
+          `
+        )
+        .join("")}
+    </section>
   `;
 }
 

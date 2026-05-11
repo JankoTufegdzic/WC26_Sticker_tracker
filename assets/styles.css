@@ -640,7 +640,21 @@ input {
 
   .print-list {
     display: grid;
-    gap: 2.5mm;
+    gap: 5mm;
+  }
+
+  .print-group {
+    display: grid;
+    gap: 2mm;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-group h2 {
+    margin: 0;
+    border-bottom: 0.3mm solid #000;
+    padding-bottom: 1mm;
+    font-size: 13pt;
   }
 
   .print-row {

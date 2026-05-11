@@ -11,7 +11,7 @@ import {
   updateAccountUi,
 } from "./modules/auth.js";
 import { countOwned, getRemainingTickets, getTotals } from "./modules/collection.js";
-import { allTeams, teamByCode } from "./modules/data.js";
+import { teamByCode, TICKET_DATA } from "./modules/data.js";
 import { elements } from "./modules/dom.js";
 import { getRoute, goToAdjacentTeam, goToTeam } from "./modules/router.js";
 import {
@@ -187,14 +187,17 @@ async function toggleTicket(teamCode, ticketNo, options = {}) {
 }
 
 function printRemainingTickets() {
-  const rows = allTeams
-    .map((item) => ({
-      label: item.code,
-      numbers: getRemainingTickets(item),
-    }))
-    .filter((row) => row.numbers.length > 0);
+  const groups = TICKET_DATA.map((group) => ({
+    label: group.group,
+    rows: group.teams
+      .map((item) => ({
+        label: item.code,
+        numbers: getRemainingTickets(item),
+      }))
+      .filter((row) => row.numbers.length > 0),
+  })).filter((group) => group.rows.length > 0);
 
-  elements.printReport.innerHTML = renderPrintReportHtml(rows);
+  elements.printReport.innerHTML = renderPrintReportHtml(groups);
 
   const cleanup = () => {
     elements.printReport.innerHTML = "";
