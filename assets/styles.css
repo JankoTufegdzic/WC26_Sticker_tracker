@@ -659,10 +659,9 @@ input {
   }
 
   .print-group {
-    display: grid;
-    gap: 0.5mm;
-    break-inside: auto;
-    page-break-inside: auto;
+    display: block;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .print-group h2 {
@@ -670,12 +669,15 @@ input {
     border-bottom: 0.3mm solid #000;
     padding-bottom: 0.5mm;
     font-size: 13pt;
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   .print-row {
     display: grid;
     grid-template-columns: 42mm 1fr;
     gap: 4mm;
+    margin-top: 0.5mm;
     break-inside: avoid;
     page-break-inside: avoid;
   }
