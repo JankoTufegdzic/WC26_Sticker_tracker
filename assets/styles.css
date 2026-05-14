@@ -655,12 +655,12 @@ input {
 
   .print-list {
     display: grid;
-    gap: 5mm;
+    gap: 3mm;
   }
 
   .print-group {
     display: grid;
-    gap: 2mm;
+    gap: 1mm;
     break-inside: avoid;
     page-break-inside: avoid;
   }
@@ -675,7 +675,7 @@ input {
   .print-row {
     display: grid;
     grid-template-columns: 42mm 1fr;
-    gap: 6mm;
+    gap: 4mm;
     break-inside: avoid;
     page-break-inside: avoid;
   }
