@@ -3,6 +3,7 @@
 import { state } from "./modules/auth.js";
 import {
   hydrateTickets,
+  recoverSession,
   saveTicket,
   setupSupabase,
   signIn,
@@ -18,11 +19,14 @@ import {
   renderHomeHtml,
   renderLockedHtml,
   renderPrintReportHtml,
+  renderSessionLoadingHtml,
   renderTeamHtml,
 } from "./modules/render.js";
 import { ticketKey } from "./modules/utils.js";
 
 init();
+
+let sessionRecovery = null;
 
 async function init() {
   setupSupabase();
@@ -120,8 +124,13 @@ function openAuthDialog() {
 
 function render() {
   updateAccountUi();
-  if (!state.supabaseClient || !state.currentUser) {
+  if (!state.supabaseClient) {
     elements.app.innerHTML = renderLockedHtml(Boolean(state.supabaseClient));
+    return;
+  }
+
+  if (!state.currentUser) {
+    recoverSessionBeforeLocking();
     return;
   }
 
@@ -135,6 +144,28 @@ function render() {
     totals: getTotals(),
     countOwned,
   });
+}
+
+function recoverSessionBeforeLocking() {
+  elements.app.innerHTML = renderSessionLoadingHtml();
+
+  if (!sessionRecovery) {
+    sessionRecovery = recoverSession()
+      .then(async (recovered) => {
+        if (recovered) {
+          await hydrateTickets();
+        }
+      })
+      .finally(() => {
+        sessionRecovery = null;
+        updateAccountUi();
+        if (!state.currentUser) {
+          elements.app.innerHTML = renderLockedHtml(true);
+          return;
+        }
+        render();
+      });
+  }
 }
 
 function renderTeam(code) {
@@ -167,7 +198,7 @@ async function markAllOwned(teamCode) {
 
 async function toggleTicket(teamCode, ticketNo, options = {}) {
   if (!state.supabaseClient || !state.currentUser) {
-    elements.app.innerHTML = renderLockedHtml(Boolean(state.supabaseClient));
+    render();
     return;
   }
 

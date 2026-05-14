@@ -93,6 +93,19 @@ export async function hydrateTickets() {
   updateAccountUi();
 }
 
+export async function recoverSession() {
+  if (!state.supabaseClient) return false;
+
+  const { data, error } = await state.supabaseClient.auth.getSession();
+  if (error) {
+    console.error(error);
+    return false;
+  }
+
+  state.currentUser = data.session?.user ?? null;
+  return Boolean(state.currentUser);
+}
+
 export function updateAccountUi() {
   const configured = Boolean(state.supabaseClient);
   elements.authButton.classList.toggle("hidden", Boolean(state.currentUser));

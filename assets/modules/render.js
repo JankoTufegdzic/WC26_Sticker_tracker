@@ -25,6 +25,15 @@ export function renderLockedHtml(hasSupabase) {
   `;
 }
 
+export function renderSessionLoadingHtml() {
+  return `
+    <section class="locked-panel">
+      <h1>Restoring session</h1>
+      <p>Checking your signed-in state...</p>
+    </section>
+  `;
+}
+
 export function renderHomeHtml({ totals, countOwned }) {
   return `
     <section class="page-head">
