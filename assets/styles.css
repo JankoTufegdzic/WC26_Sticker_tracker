@@ -155,6 +155,55 @@ a {
   font-size: 1.55rem;
 }
 
+.completion-metric {
+  display: grid;
+  align-content: space-between;
+  gap: 10px;
+}
+
+.half-donut {
+  position: relative;
+  display: grid;
+  width: min(190px, 100%);
+  aspect-ratio: 2 / 1;
+  align-items: end;
+  justify-self: center;
+  overflow: hidden;
+}
+
+.half-donut::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px 999px 0 0;
+  background: conic-gradient(
+    from 270deg at 50% 100%,
+    var(--success) 0 var(--completion-angle),
+    var(--surface-strong) var(--completion-angle) 180deg,
+    transparent 180deg
+  );
+}
+
+.half-donut::after {
+  content: "";
+  position: absolute;
+  right: 18%;
+  bottom: -1px;
+  left: 18%;
+  height: 64%;
+  border-radius: 999px 999px 0 0;
+  background: var(--surface);
+}
+
+.half-donut strong {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 1.6rem;
+  text-align: center;
+}
+
 .group-section {
   margin-top: 28px;
 }

@@ -47,7 +47,12 @@ export function renderHomeHtml({ totals, countOwned }) {
     <section class="summary-grid" aria-label="Album summary">
       <article class="metric"><span>Owned</span><strong>${totals.owned}</strong></article>
       <article class="metric"><span>Still needed</span><strong>${totals.missing}</strong></article>
-      <article class="metric"><span>Completion</span><strong>${totals.percent}%</strong></article>
+      <article class="metric completion-metric">
+        <span>Completion</span>
+        <div class="half-donut" style="--completion: ${totals.percent}; --completion-angle: ${totals.percent * 1.8}deg">
+          <strong>${totals.percent}%</strong>
+        </div>
+      </article>
     </section>
 
     ${TICKET_DATA.map((group) => renderGroup(group, countOwned)).join("")}
