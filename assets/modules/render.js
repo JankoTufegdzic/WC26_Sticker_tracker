@@ -111,14 +111,22 @@ function renderSearchInput(mode) {
 }
 
 export function renderPrintReportHtml(groups) {
+  const leadingGroups = groups.filter((group) => group.label === "FWC");
+  const regularGroups = groups.filter((group) => group.label !== "FWC");
+
   return `
     <div class="print-page">
       <h1>WC26 Remaining Tickets</h1>
       <p>${new Date().toLocaleDateString()}</p>
+      ${
+        leadingGroups.length
+          ? `<div class="print-featured-list">${leadingGroups.map((group) => renderPrintGroup(group, "featured")).join("")}</div>`
+          : ""
+      }
       <div class="print-list">
         ${
-          groups.length
-            ? groups
+          regularGroups.length
+            ? regularGroups
                 .map((group) => renderPrintGroup(group))
                 .join("")
             : '<div class="print-row"><strong>Complete</strong><span>No remaining tickets</span></div>'
@@ -128,22 +136,43 @@ export function renderPrintReportHtml(groups) {
   `;
 }
 
-function renderPrintGroup(group) {
+function renderPrintGroup(group, variant = "") {
+  const variantClass = variant ? ` print-group-${variant}` : "";
+  const splitRows = variant !== "featured";
+
   return `
-    <section class="print-group">
+    <section class="print-group${variantClass}">
       <h2>${escapeHtml(group.label)}</h2>
-      ${group.rows
-        .map(
-          (row) => `
-            <div class="print-row">
-              <strong>${escapeHtml(row.label)}</strong>
-              <span>${row.numbers.map(escapeHtml).join(" ")}</span>
-            </div>
-          `
-        )
-        .join("")}
+      <table class="print-table">
+        <tbody>
+          ${group.rows
+            .map(
+              (row) => `
+                <tr>
+                  <th scope="row">${escapeHtml(row.label)}</th>
+                  <td>${renderPrintNumbers(row.numbers, splitRows)}</td>
+                </tr>
+              `
+            )
+            .join("")}
+        </tbody>
+      </table>
     </section>
   `;
+}
+
+function renderPrintNumbers(numbers, splitRows) {
+  if (!splitRows) {
+    return numbers.map(escapeHtml).join(" ");
+  }
+
+  const sortedNumbers = [...numbers].sort((left, right) => Number(left) - Number(right));
+  const lines = [];
+  for (let index = 0; index < sortedNumbers.length; index += 10) {
+    lines.push(sortedNumbers.slice(index, index + 10));
+  }
+
+  return lines.map((line) => `<span class="print-number-line">${line.map(escapeHtml).join(" ")}</span>`).join("");
 }
 
 function renderGroup(group, countOwned) {

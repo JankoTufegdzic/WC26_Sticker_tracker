@@ -44,7 +44,7 @@ The app uses hash routes like `#/team/BRA`, so it works without custom server re
 
 ## PDF export
 
-Use `Print remaining PDF` in the app, then choose `Save as PDF` in the browser print dialog. The print layout contains only remaining tickets in this format:
+Use `Print remaining PDF` in the app, then choose `Save as PDF` in the browser print dialog. The print layout contains only remaining tickets in a compact three-column table format:
 
 ```text
 FWC 00 1 2 3

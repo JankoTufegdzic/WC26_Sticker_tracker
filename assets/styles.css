@@ -703,7 +703,7 @@ input {
 
 @media print {
   @page {
-    margin: 14mm 14mm 34mm;
+    margin: 10mm;
   }
 
   body {
@@ -722,26 +722,31 @@ input {
 
   .print-page {
     font-family: Arial, sans-serif;
-    font-size: 11pt;
-    padding-bottom: 24mm;
+    font-size: 9pt;
+    line-height: 1.28;
   }
 
   .print-page h1 {
-    margin: 0 0 4mm;
-    font-size: 18pt;
+    margin: 0 0 1.5mm;
+    font-size: 14pt;
   }
 
   .print-page p {
-    margin: 0 0 7mm;
+    margin: 0 0 4mm;
+  }
+
+  .print-featured-list {
+    margin-bottom: 5mm;
   }
 
   .print-list {
-    display: grid;
-    gap: 2mm;
+    columns: 3 58mm;
+    column-gap: 6mm;
   }
 
   .print-group {
     display: block;
+    margin: 0 0 3.5mm;
     break-inside: avoid;
     page-break-inside: avoid;
   }
@@ -749,23 +754,54 @@ input {
   .print-group h2 {
     margin: 0;
     border-bottom: 0.3mm solid #000;
-    padding-bottom: 0.5mm;
-    font-size: 13pt;
+    padding: 0 0 0.8mm;
+    font-size: 10pt;
     break-after: avoid;
     page-break-after: avoid;
   }
 
-  .print-row {
-    display: grid;
-    grid-template-columns: 42mm 1fr;
-    gap: 4mm;
-    margin-top: 0.5mm;
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .print-table tr {
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
-  .print-row strong,
-  .print-row span {
-    line-height: 1.16;
+  .print-table th,
+  .print-table td {
+    padding: 0.9mm 0;
+    border-bottom: 0.2mm solid #d0d0d0;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .print-table th {
+    width: 12mm;
+    padding-right: 2mm;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .print-table td {
+    word-spacing: 1.2mm;
+  }
+
+  .print-number-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .print-group-featured .print-table tr {
+    display: grid;
+    grid-template-columns: 12mm 1fr;
+    gap: 2mm;
+  }
+
+  .print-group-featured .print-table th,
+  .print-group-featured .print-table td {
+    display: block;
   }
 }
