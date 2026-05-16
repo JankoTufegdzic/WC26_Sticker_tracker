@@ -167,12 +167,11 @@ function renderPrintNumbers(numbers, splitRows) {
   }
 
   const sortedNumbers = [...numbers].sort((left, right) => Number(left) - Number(right));
-  const lines = [];
-  for (let index = 0; index < sortedNumbers.length; index += 10) {
-    lines.push(sortedNumbers.slice(index, index + 10));
-  }
+  const lines = [sortedNumbers.slice(0, 10), sortedNumbers.slice(10, 20)];
 
-  return lines.map((line) => `<span class="print-number-line">${line.map(escapeHtml).join(" ")}</span>`).join("");
+  return lines
+    .map((line) => `<span class="print-number-line">${line.length ? line.map(escapeHtml).join(" ") : "&nbsp;"}</span>`)
+    .join("");
 }
 
 function renderGroup(group, countOwned) {
